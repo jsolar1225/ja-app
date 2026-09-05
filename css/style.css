@@ -1,0 +1,461 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.container { width: 100%; max-width: 620px; }
+
+/* ═══ 헤더 ═══ */
+.app-header { text-align: center; margin-bottom: 18px; }
+.app-header h1 { color: #fff; font-size: 1.7rem; margin-bottom: 6px; }
+.subtitle { color: rgba(255,255,255,0.85); font-size: 0.9rem; }
+
+/* ═══ ★ 전체 정렬 통일 — 모든 행을 같은 폭·같은 간격으로 ═══ */
+.pred-filter,
+.level-filter,
+.mode-switch,
+.progress-bar,
+.card,
+.complete,
+.btn-reset,
+.stats {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+.pred-filter  { margin-bottom: 10px; }
+.level-filter { margin-bottom: 12px; }
+.mode-switch  { margin-bottom: 12px; }
+.progress-bar { margin-bottom: 14px; }
+
+/* ═══ 술어 종류 선택 ═══ */
+.pred-filter {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+}
+.pred-title {
+  color: rgba(255,255,255,0.9);
+  font-size: 0.78rem;
+  display: block;
+  margin-bottom: 7px;
+  text-align: left;
+}
+.pred-btns {
+  display: flex;
+  gap: 6px;
+}
+.pred-btn {
+  flex: 1;
+  min-height: 48px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  white-space: pre-line;
+  background: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.75);
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 10px;
+  padding: 8px 2px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1.25;
+}
+.pred-btn .sub { display: block; font-size: 0.62rem; opacity: 0.75; }
+.pred-btn:hover { background: rgba(255,255,255,0.3); }
+/* ★ 품사 버튼 활성화 — 밝은 파스텔 통일 */
+.pred-btn.active#predNoun  { background:#e3f2fd; border-color:#90caf9; color:#1565c0; font-weight:bold; }
+.pred-btn.active#predVerb  { background:#e3f6e9; border-color:#a5d6a7; color:#1b5e20; font-weight:bold; }
+.pred-btn.active#predIAdj  { background:#ffe8ec; border-color:#f8a8bc; color:#c2185b; font-weight:bold; }
+.pred-btn.active#predNaAdj { background:#fff3e0; border-color:#ffcc80; color:#e65100; font-weight:bold; }
+.pred-btn.active#predAdv   { background:#ede7ff; border-color:#b39ddb; color:#4527a0; font-weight:bold; }
+
+/* ═══ 레벨 선택 ═══ */
+.level-filter { display: flex; gap: 6px; }
+.level-btn {
+  flex: 1;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;          /* 세로 중앙 정렬 */
+  justify-content: center;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 8px 4px;
+  font-size: 0.85rem;
+  border-radius: 10px;
+  transition: all 0.2s;
+  line-height: 1.3;
+}
+
+.level-btn.active[data-level="all"] { background:#fff; border-color:#fff; color:#5b6bd5; }
+.level-btn.active[data-level="N5"] { background:#7ed957; border-color:#7ed957; color:#1e4620; }
+.level-btn.active[data-level="N4"] { background:#ffd93d; border-color:#ffd93d; color:#7a5c00; }
+.level-btn.active[data-level="N3"] { background:#ff9f43; border-color:#ff9f43; color:#6b3300; }
+.level-btn.active[data-level="N2"] { background:#ff6b6b; border-color:#ff6b6b; color:#fff; }
+.level-btn.active[data-level="N1"] { background:#c56cf0; border-color:#c56cf0; color:#fff; }
+
+/* ═══ 모드 전환 + 자동 타이머 ═══ */
+.mode-switch {
+  display: flex;
+  justify-content: space-between;   /* 전환버튼 좌측 끝 ↔ 타이머 우측 끝 */
+  align-items: center;
+  gap: 10px;
+}
+.mode-btn {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 20px;
+  padding: 9px 18px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mode-btn:hover { background: rgba(255,255,255,0.3); }
+.mode-btn.active { background: #fff; color: #5b6bd5; border-color: #fff; font-weight: bold; }
+
+/* ── 자동 다음 타이머 (흰색 캡슐) ── */
+.auto-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 7px 14px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 999px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+  margin-left: auto;
+}
+.at-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4c1d95;
+  margin-right: 2px;
+  white-space: nowrap;
+}
+.at-btn {
+  padding: 4px 9px;
+  border: 1.5px solid #ddd6fe;
+  border-radius: 20px;
+  background: #fff;
+  color: #5b21b6;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+.at-btn:hover { background: #ede9fe; }
+.at-btn:active { transform: scale(0.95); }
+.at-btn.active {
+  background: #7c3aed;
+  border-color: #7c3aed;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4);
+}
+.at-btn.off.active {
+  background: #4c1d95;
+  border-color: #4c1d95;
+  color: #fff;
+}
+
+/* ═══ 진행바 ═══ */
+.progress-bar {
+  background: rgba(255,255,255,0.25);
+  border-radius: 20px; height: 10px;
+  overflow: hidden;
+}
+.progress-fill {
+  background: linear-gradient(90deg,#ffd93d,#ff9f43);
+  height: 100%; width: 0%;
+  border-radius: 20px;
+  transition: width 0.4s ease;
+}
+
+/* ═══ 카드 ═══ */
+.card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 28px 26px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+  animation: slideIn 0.4s ease;
+  margin-bottom: 0;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card-top { display: flex; gap: 8px; margin-bottom: 18px; }
+.level-badge {
+  background: #e8ecff; color: #5b6bd5;
+  font-size: 0.75rem; font-weight: bold;
+  padding: 4px 12px; border-radius: 12px;
+}
+.kind-badge { font-size: 0.75rem; font-weight: bold; padding: 4px 12px; border-radius: 12px; }
+.kind-badge.k-verb  { background:#e3f6e9; color:#1b5e20; }
+.kind-badge.k-iadj  { background:#ffe8ec; color:#c2185b; }
+.kind-badge.k-naadj { background:#fff3e0; color:#e65100; }
+.kind-badge.k-noun  { background:#e3f2fd; color:#1565c0; }
+.kind-badge.k-adv   { background:#ede7ff; color:#4527a0; }
+
+/* ═══ 일본어 명조체(Serif) 통일 ═══ */
+.full-sentence,
+.full-sentence.reverse-prompt,
+.part .jp,
+.particle-jp,
+#wordReading,
+.conj-form,
+.conj-form ruby rt,
+.full-sentence.word-mode ruby rt,
+ruby rt {
+  font-family: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", "MS Mincho", serif;
+}
+
+/* ── 한 줄 일본어 문장 ── */
+.full-sentence {
+  text-align: center;
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: #2d2d2d;
+  line-height: 1.5;
+  padding: 18px 8px 10px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  word-break: keep-all;
+  letter-spacing: 0.04em;
+}
+.full-sentence:active { transform: scale(0.98); }
+.full-sentence.reverse-prompt {
+  font-size: 1.35rem;
+  color: #5b6bd5;
+  cursor: default;
+  background: #f0f4ff;
+  border-radius: 12px;
+  padding: 18px 12px;
+  margin-bottom: 28px;
+}
+.full-sentence.word-mode { font-size: 3rem; padding: 26px 8px 14px; }
+.full-sentence.word-mode ruby rt {
+  font-size: 14px;
+  font-weight: 400;
+  color: #7c6fd0;
+  letter-spacing: 1px;
+  opacity: 0.85;
+}
+
+.hint { text-align: center; color: #bbb; font-size: 0.75rem; margin-bottom: 18px; }
+
+#revealBtn {
+  display: none;
+  margin: 0 auto 18px;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #ff9f43, #ff6b6b);
+  color: #fff; border: none; border-radius: 12px;
+  cursor: pointer; font-size: 0.95rem; font-weight: bold;
+}
+#revealBtn:hover { filter: brightness(1.08); }
+
+/* ═══ 성분 분석: 주어 / 조사 / 술어 ═══ */
+.parts { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.part {
+  flex: 1; min-width: 90px;
+  border-radius: 14px;
+  padding: 13px 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  overflow-wrap: break-word;
+}
+.part:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+.part.subject   { background: #f0f4ff; }
+.part.particle-chip { background: #ffeef2; flex: 0 0 auto; min-width: 74px; }
+.part.predicate { background: #e3f6e9; }
+.part.subject.adv-mode {
+  background: linear-gradient(135deg, #f3e8ff, #ede9fe);
+  border-color: #c4b5fd;
+}
+.part .label { font-size: 0.68rem; color: #999; margin-bottom: 5px; }
+.part .jp { font-size: 1.3rem; font-weight: bold; color: #333; }
+.particle-jp { font-size: 1.5rem !important; color: #e0446e !important; }
+.part .reading { font-size: 0.72rem; color: #888; margin-top: 2px; }
+.part .ko { font-size: 0.82rem; color: #555; margin-top: 5px; }
+
+.particle-tip {
+  background: #fff8f0;
+  border-left: 4px solid #ff9f43;
+  border-radius: 10px;
+  padding: 11px 14px;
+  margin-bottom: 16px;
+  font-size: 0.83rem;
+  color: #7a5200;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+.particle-tip strong { color: #e0446e; }
+
+.translation-box {
+  text-align: center;
+  background: #f7f8fc;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 18px;
+  color: #444; font-size: 1rem;
+  display: none;
+  word-break: keep-all;
+}
+.translation-box.show { display: block; animation: fadeIn 0.3s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ═══ 버튼 3개 ═══ */
+.buttons { display: flex; gap: 10px; margin-top: 20px; }
+button {
+  border: none; border-radius: 12px;
+  font-size: 0.95rem; font-weight: bold;
+  cursor: pointer; transition: transform 0.1s;
+}
+.buttons button { flex: 1; padding: 14px; }
+button:active { transform: scale(0.97); }
+
+.btn-listen  { background: #5b6bd5; color: #fff; }
+.btn-meaning { background: #eee; color: #555; }
+.btn-next    { background: linear-gradient(135deg,#ffd93d,#ffc107); color: #7a5c00; }
+
+/* ── 다음 버튼 안 진행바 (남은 시간) ── */
+.btn-next { position: relative; overflow: hidden; }
+.auto-progress {
+  position: absolute;
+  left: 0; bottom: 0;
+  height: 4px;
+  width: 0%;
+  background: rgba(76, 29, 149, 0.45);
+  pointer-events: none;
+}
+
+/* ═══ 진도 초기화 / 완료 화면 ═══ */
+.btn-reset {
+  background: transparent; color: #fff;
+  border: 1px solid rgba(255,255,255,0.5);
+  margin-top: 16px; padding: 12px;
+}
+.complete { text-align: center; color: #fff; display: none; }
+.complete h2 { font-size: 2rem; margin-bottom: 12px; }
+.complete p  { margin-bottom: 24px; }
+.complete button { padding: 14px 36px; background: #fff; color: #5b6bd5; }
+
+/* ═══ 활용 박스 (목록형 2열 그리드 — 중복 제거 통합본) ═══ */
+.btn-conjugation {
+  display: block; width: 100%;
+  margin-top: 14px;
+  margin-bottom: 12px;
+  background: #e8ecff; color: #5b6bd5;
+  padding: 12px;
+}
+#conjBox {
+  display: none;
+  margin-top: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #ece7f8;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fbfaff 0%, #f6f2fc 100%);
+  padding: 12px;
+  box-shadow: 0 2px 10px rgba(120, 100, 180, 0.08);
+}
+#conjBox.show {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  animation: fadeIn 0.3s;
+}
+.conj-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  background: #fff;
+  border: 1px solid #f0ebfa;
+  border-radius: 10px;
+  padding: 12px 14px;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.conj-row:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(120, 100, 180, 0.12);
+}
+.conj-label {
+  font-size: 12px;
+  color: #8a8496;
+  letter-spacing: .02em;
+}
+.conj-label small {
+  color: #b8b2c6;
+  font-size: 11px;
+  margin-left: 3px;
+}
+.conj-form {
+  font-size: 21px;
+  font-weight: 700;
+  color: #2d2a35;
+  text-align: right;
+  line-height: 1.3;
+}
+.conj-form ruby rt {
+  font-size: 10px;
+  color: #9a94a8;
+}
+@media (max-width: 420px) {
+  #conjBox.show { grid-template-columns: 1fr; }
+  .conj-form { text-align: left; }
+}
+
+/* ═══ 통계 (맨 아래, 카드 폭과 동일) ═══ */
+.stats {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+.stat {
+  flex: 1;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 16px;
+  padding: 16px 10px;
+  text-align: center;
+  color: #fff;
+}
+.stat .num { font-size: 1.5rem; font-weight: bold; }
+.stat .label { font-size: 0.75rem; opacity: 0.85; }
+
+/* ═══ 반응형 ═══ */
+@media (min-width: 768px) {
+  .container { max-width: 720px; }
+  .card { padding: 40px 38px; }
+  .full-sentence { font-size: 2.6rem; }
+}
+@media (max-width: 480px) {
+  body { padding: 12px; }
+  .app-header h1 { font-size: 1.3rem; }
+  .mode-btn { font-size: 0.72rem; padding: 8px 10px; }
+  .level-filter { flex-wrap: wrap; }
+  .level-btn { flex: 1 1 30%; font-size: 0.72rem; padding: 7px 2px; }
+  .pred-btn { font-size: 0.66rem; padding: 7px 1px; }
+  .card { padding: 22px 14px; }
+  .full-sentence { font-size: 1.7rem; }
+  .full-sentence.reverse-prompt { font-size: 1.1rem; }
+  .full-sentence.word-mode { font-size: 2.3rem; }
+  .part .jp { font-size: 1rem; }
+  .mode-switch { flex-direction: column; gap: 8px; }
+  .auto-timer { margin-left: 0; justify-content: center; }
+  .at-btn { padding: 4px 7px; font-size: 0.68rem; }
+}

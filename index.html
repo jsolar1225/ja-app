@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>문장으로 배우는 일본어</title>
+  <link rel="stylesheet" href="css/style.css?v=65">
+  <!-- ★ 일본어 명조체 웹폰트 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+<div class="container">
+
+  <header class="app-header">
+    <h1>블록 일본어</h1>
+    <p class="subtitle">(2블록 일본어)명사 + 조사 + 동사·형용사, 조립하듯 익혀요</p>
+  </header>
+
+  <!-- ★★★ 술어 종류 선택 (최상단으로 이동) ★★★ -->
+  <div class="pred-filter">
+    <span class="pred-title">📚 공부할 술어</span>
+    <div class="pred-btns">
+      <button id="predNoun"    class="pred-btn" onclick="App.setPred('noun')">명사</button>
+      <button id="predVerb"    class="pred-btn" onclick="App.setPred('verb')">동사</button>
+      <button id="predIAdj"    class="pred-btn" onclick="App.setPred('iAdj')">い형용사<span class="sub">(다형)</span></button>
+      <button id="predNaAdj"   class="pred-btn" onclick="App.setPred('naAdj')">な형용사<span class="sub">(나형)</span></button>
+      <button id="predAdv"     class="pred-btn" onclick="App.setPred('adv')">부사<span class="sub">(수식)</span></button>
+    </div>
+  </div>
+
+   <!-- 레벨 선택 (레벨명만 표시) -->
+  <div class="level-filter">
+    <button class="level-btn active" data-level="all" onclick="App.setLevel('all')">전체</button>
+    <button class="level-btn" data-level="N5" onclick="App.setLevel('N5')">N5</button>
+    <button class="level-btn" data-level="N4" onclick="App.setLevel('N4')">N4</button>
+    <button class="level-btn" data-level="N3" onclick="App.setLevel('N3')">N3</button>
+    <button class="level-btn" data-level="N2" onclick="App.setLevel('N2')">N2</button>
+    <button class="level-btn" data-level="N1" onclick="App.setLevel('N1')">N1</button>
+  </div>
+
+
+  <!-- ★ 모드 전환 (버튼 1개로 토글) + 자동 다음 타이머 -->
+  <div class="mode-switch">
+    <button id="modeToggle" class="mode-btn active" onclick="App.toggleMode()">일본어 → 한국어</button>
+
+    <!-- ★ 자동 다음 타이머 -->
+    <div class="auto-timer">
+      <span class="at-label">⏱ 자동다음</span>
+      <button class="at-btn" data-sec="1">1초</button>
+      <button class="at-btn" data-sec="3">3초</button>
+      <button class="at-btn" data-sec="5">5초</button>
+      <button class="at-btn" data-sec="10">10초</button>
+      <button class="at-btn" data-sec="20">20초</button>
+      <button class="at-btn" data-sec="30">30초</button>
+      <button class="at-btn off active" data-sec="0">끄기</button>
+    </div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+  <!-- 학습 카드 -->
+  <div class="card" id="card">
+    <div class="card-top">
+      <span class="level-badge" id="levelBadge"></span>
+      <span class="kind-badge" id="kindBadge"></span>
+    </div>
+
+    <!-- ★ 단어 모드: 단어 위에 요미가나(읽기) 표시 -->
+    <p id="wordReading" style="text-align:center; font-size:18px; color:#7c6fd0; margin:0; letter-spacing:2px; min-height:24px;"></p>
+
+    <!-- ★★★ 첫 번째 영역: 한 줄 일본어 문장 (큰 글씨 · 클릭 시 발음) ★★★ -->
+    <div class="full-sentence" id="fullSentence"></div>
+    <div class="hint" id="hintText">💡 문장을 클릭하면 발음이 들려요</div>
+
+    <button id="revealBtn" style="display:none">활용 보기</button>
+
+
+    <!-- ★★★ 분석 영역 전체 (문장 모드에서만 표시, 단어 모드에서는 숨김) ★★★ -->
+    <div id="blockAnalysis">
+
+      <!-- 주어(또는 부사) / 조사 / 술어 3칸 -->
+      <div class="parts">
+        <div class="part subject" id="partSubject" onclick="App.speakFirst()">
+          <div class="label" id="subjLabel">주어</div>
+          <div class="jp" id="subjJp"></div>
+          <div class="reading" id="subjReading"></div>
+          <div class="ko" id="subjKo"></div>
+        </div>
+        <div class="part particle-chip" id="partParticle">
+          <div class="label">조사</div>
+          <div class="jp particle-jp" id="particleJp"></div>
+          <div class="ko" id="particleKo"></div>
+        </div>
+        <div class="part predicate" id="partPredicate" onclick="App.speakPred()">
+          <div class="label" id="predLabel">술어 (기본형)</div>
+          <div class="jp" id="predJp"></div>
+          <div class="reading" id="predReading"></div>
+          <div class="ko" id="predKo"></div>
+        </div>
+      </div>
+
+      <!-- ★ 조사 학습 팁 -->
+      <div class="particle-tip" id="particleTip"></div>
+
+    </div>
+    <!-- ★★★ 분석 영역 끝 ★★★ -->
+
+    <div class="translation-box" id="translationBox"></div>
+
+    <button class="btn-conjugation" id="conjToggleBtn" onclick="App.toggleConj()">🔀 활용 보기 ▼</button>
+
+    <div class="conj-box" id="conjBox"></div>
+
+    <div class="buttons">
+      <button class="btn-listen" onclick="App.speak()">🔊 듣기</button>
+      <button class="btn-meaning" onclick="App.revealAnswer(false)">📖 뜻 보기</button>
+      <button class="btn-next" onclick="App.next()">다음 →</button>
+    </div>
+  </div>
+
+  <button class="btn-reset" onclick="App.reset()">🗑️ 진도 초기화</button>
+
+  <div class="complete" id="completeView">
+    <h2>🎉 오늘의 학습 완료!</h2>
+    <p>모든 문장을 학습했어요. 내일 다시 만나요!</p>
+    <button onclick="App.buildQueue(); App.loadCard();">처음부터 다시</button>
+  </div>
+
+    <!-- ★ 통계 (전체 문장 카드 제거) -->
+  <div class="stats">
+    <div class="stat">
+      <div class="num" id="statDone">0</div>
+      <div class="label">학습 완료</div>
+    </div>
+    <div class="stat">
+      <div class="num" id="statToday">🔥 0</div>
+      <div class="label">오늘 학습</div>
+    </div>
+  </div>
+
+</div>
+<script src="js/data-subjects.js"></script>
+<script src="js/data-objects.js"></script>
+<script src="js/data-adjectives.js"></script>
+<script src="js/data-verbs.js"></script>
+
+<script src="js/data-n5.js"></script>
+<script src="js/data-n4.js"></script>
+<script src="js/data-n3.js"></script>
+<script src="js/data-n2.js"></script>
+<script src="js/data-n1.js"></script>
+
+<script src="js/data-words.js"></script>
+
+<script src="js/conjugate.js"></script>
+<script src="js/generator.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/speech.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
